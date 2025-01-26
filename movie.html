@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Puzzle</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+</head>
+<style>
+  body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.puzzle-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+}
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.slider {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  filter:blur(6px);
+}
+
+.slide {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+#prevButton {
+  left: 10px;
+}
+
+#nextButton {
+  right: 10px;
+}
+
+.nav-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hint-container {
+  margin: 15px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.input-container {
+  margin: 20px 0;
+}
+
+#guessInput {
+  padding: 10px;
+  font-size: 16px;
+  width: 80%;
+  margin-bottom: 10px;
+}
+
+#submitGuess {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #46494b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#submitGuess:hover {
+  background-color: #bfc0c1;
+  color:#46494b;
+}
+
+.result-container {
+  font-size: 18px;
+  margin-top: 20px;
+  color: #007BFF;
+}
+
+</style>
+<body>
+  <div class="puzzle-container">
+    <h1>Guess the Movie Protagonist</h1>
+    <div class="slider-container">
+      <button id="prevButton" class="nav-button">◀</button>
+      <div class="slider">
+        <img src="one.jpg" alt="Movie 1" class="slide">
+        <img src="two.jpg" alt="Movie 2" class="slide">
+        <img src="three.jpg" alt="Movie 3" class="slide">
+        <img src="four.jpg" alt="Movie 4" class="slide">
+      </div>
+      <button id="nextButton" class="nav-button">▶</button>
+    </div>
+    <div class="hint-container">
+      <p id="hint">Hint: A planted idea takes root in unfamiliar terrain.</p>
+    </div>
+    <div class="input-container">
+      <input type="text" id="guessInput" placeholder="Enter protagonists's name">
+      <button id="submitGuess">Submit</button>
+    </div>
+    <div class="result-container">
+      <p id="resultMessage"></p>
+    </div>
+  </div>
+  <script>
+    // Encoded value 
+const encryptedDirector = "Q29iYg==";
+
+// Function to decode the encrypted value
+function decodeBase64(encoded) {
+  return atob(encoded);
+}
+
+// Reference elements
+const guessInput = document.getElementById("guessInput");
+const submitButton = document.getElementById("submitGuess");
+const resultMessage = document.getElementById("resultMessage");
+
+// Slider logic
+const slider = document.querySelector(".slider");
+const slides = document.querySelectorAll(".slide");
+const prevButton = document.getElementById("prevButton");
+const nextButton = document.getElementById("nextButton");
+
+let currentIndex = 0;
+
+function updateSliderPosition() {
+  const offset = -currentIndex * 100;
+  slider.style.transform = `translateX(${offset}%)`;
+}
+
+prevButton.addEventListener("click", () => {
+  currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+  updateSliderPosition();
+});
+
+nextButton.addEventListener("click", () => {
+  currentIndex = (currentIndex + 1) % slides.length;
+  updateSliderPosition();
+});
+
+// Event listener for guess submission
+submitButton.addEventListener("click", () => {
+  const userGuess = guessInput.value.trim();
+  const correctDirector = decodeBase64(encryptedDirector); // Decode the encrypted value
+
+  if (userGuess.toLowerCase() === correctDirector.toLowerCase()) {
+    resultMessage.textContent = "CTF Flag: MOVIE{Inception_Mastermind}";
+    resultMessage.style.color = "green";
+  } else {
+    resultMessage.textContent = "Hey, keep trying again!";
+    resultMessage.style.color = "red";
+  }
+});
+
+  </script>
+</body>
+</html>
