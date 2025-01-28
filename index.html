@@ -41,7 +41,7 @@
 .slider {
   display: flex;
   transition: transform 0.5s ease-in-out;
-  filter:blur(6px);
+  filter:blur(14px);
 }
 
 .slide {
@@ -129,7 +129,7 @@
       <button id="nextButton" class="nav-button">▶</button>
     </div>
     <div class="hint-container">
-      <p id="hint">Hint: A planted idea takes root in unfamiliar terrain.</p>
+      <p id="hint"></p>
     </div>
     <div class="input-container">
       <input type="text" id="guessInput" placeholder="Enter protagonists's name">
@@ -141,7 +141,8 @@
   </div>
   <script>
     // Encoded value 
-const encryptedDirector = "Q29iYg==";
+    const encryptedDirector = "Q29iYg==";
+const encryptedFlag = "TVRPVklFe0luY2VwdGlvbl9NYXN0ZXJtaW5kfQ=="; // Encrypted "MOVIE{Inception_Mastermind}"
 
 // Function to decode the encrypted value
 function decodeBase64(encoded) {
@@ -180,9 +181,10 @@ nextButton.addEventListener("click", () => {
 submitButton.addEventListener("click", () => {
   const userGuess = guessInput.value.trim();
   const correctDirector = decodeBase64(encryptedDirector); // Decode the encrypted value
+  const correctFlag = decodeBase64(encryptedFlag); // Decode the encrypted flag
 
   if (userGuess.toLowerCase() === correctDirector.toLowerCase()) {
-    resultMessage.textContent = "CTF Flag: MOVIE{Inception_Mastermind}";
+    resultMessage.textContent = `CTF Flag: ${correctFlag}`;
     resultMessage.style.color = "green";
   } else {
     resultMessage.textContent = "Hey, keep trying again!";
